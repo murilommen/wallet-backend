@@ -1,0 +1,25 @@
+micronaut:
+  application:
+    name: wallet-backend
+
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/wallet_db
+    driverClassName: org.postgresql.Driver
+    username: wallet_user
+    password: wallet_pass
+    dialect: POSTGRES
+
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none
+        show_sql: true
+        format_sql: true
+
+flyway:
+  datasources:
+    default:
+      enabled: true
