@@ -10,16 +10,10 @@ datasources:
     password: wallet_pass
     dialect: POSTGRES
 
-jpa:
-  default:
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: none
-        show_sql: true
-        format_sql: true
+jpa.default.properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
-flyway:
+liquibase:
   datasources:
     default:
       enabled: true
+      change-log: classpath:db/changelog/db.changelog-master.yaml

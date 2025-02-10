@@ -1,0 +1,13 @@
+package com.wallet.model;
+
+import lombok.Data;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+
+@Data
+public class TransactionRequest {
+    @NotNull
+    @DecimalMin(value = "0.01", inclusive = true) // Minimum amount for transactions
+    private BigDecimal amount;
+}

@@ -21,6 +21,8 @@ dependencies {
 
     // Jakarta Persistence API
     implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
+    implementation("jakarta.validation:jakarta.validation-api:3.0.0")
+
 
     // Database dependencies
     implementation("org.postgresql:postgresql:42.7.2")
@@ -29,9 +31,9 @@ dependencies {
     // Lombok for reducing boilerplate
     implementation("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
-
-    // Logging
-    runtimeOnly("ch.qos.logback:logback-classic:1.4.11")
+//
+//    // Logging
+//    runtimeOnly("ch.qos.logback:logback-classic:1.4.11")
 }
 
 
