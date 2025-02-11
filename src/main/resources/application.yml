@@ -1,6 +1,12 @@
 micronaut:
+  server:
+    port: 8081
   application:
     name: wallet-backend
+  openapi:
+    enabled: true
+    swagger-ui:
+      enabled: true
 
 datasources:
   default:
