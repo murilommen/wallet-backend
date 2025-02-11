@@ -18,7 +18,7 @@ import java.util.UUID;
 public class WalletController {
 
     @Inject
-    WalletService walletService; // Inject the INCOMING port
+    WalletService walletService;
 
     @Post
     public HttpResponse<WalletResponse> createWallet(@Body @Valid @NotNull WalletCreateRequest walletCreateRequest) {

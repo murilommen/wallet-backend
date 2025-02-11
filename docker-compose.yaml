@@ -1,0 +1,11 @@
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: wallet_user
+      POSTGRES_PASSWORD: wallet_pass
+      POSTGRES_DB: wallet_db
+
+# TODO declare user/password as env vars on a .env file

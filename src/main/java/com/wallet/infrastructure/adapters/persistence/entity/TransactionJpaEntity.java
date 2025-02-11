@@ -42,6 +42,4 @@ public class TransactionJpaEntity {
 
     @Column(name = "related_transaction_id")
     private UUID relatedTransactionId;
-
-    // No Domain Logic here
 }

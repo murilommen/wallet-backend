@@ -16,41 +16,41 @@ import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Singleton // Still using Micronaut DI annotations here - often pragmatic in application layer
+@Slf4j
+@Singleton
 public class WalletServiceImpl implements WalletService {
 
     @Inject
-    WalletRepository walletRepository; // Dependency on the OUTGOING port
+    WalletRepository walletRepository;
 
     @Inject
-    TransactionRepository transactionRepository; // Dependency on the OUTGOING port
+    TransactionRepository transactionRepository;
 
     @Override
-    @Transactional // Still using Micronaut Transactional - Infrastructure aspect, but acceptable here
+    @Transactional
     public WalletResponse createWallet(@Valid @NotNull WalletCreateRequest walletCreateRequest) {
         Wallet wallet = new Wallet(walletCreateRequest.getUserId());
-        wallet = walletRepository.save(wallet); // Using the OUTGOING port
+        wallet = walletRepository.save(wallet);
 
-        // Create initial transaction for wallet creation (for audit)
         Transaction creationTransaction = new Transaction(
                 wallet.getId(),
                 TransactionType.CREATE_WALLET,
-                BigDecimal.ZERO, // Initial balance is 0
+                BigDecimal.ZERO,
                 "Wallet Created",
                 BigDecimal.ZERO,
-                BigDecimal.ZERO // Balance before and after creation is 0
+                BigDecimal.ZERO
         );
-        transactionRepository.save(creationTransaction); // Using the OUTGOING port
+        transactionRepository.save(creationTransaction);
 
         return mapWalletToResponse(wallet);
     }
-
-    // ... (rest of the methods - getWalletBalance, getHistoricalWalletBalance, depositFunds, withdrawFunds, transferFunds, getWalletById, getWalletByIdOrThrow, createAndSaveTransaction, mapWalletToResponse, mapWalletBalanceResponse -  similar logic as before, but using the domain Wallet entity and repository ports) ...
 
     @Override
     public WalletBalanceResponse getWalletBalance(UUID walletId) {

@@ -1,12 +1,17 @@
 package com.wallet.model;
 
 import com.wallet.domain.model.Wallet;
-import lombok.Value;
+import io.micronaut.core.annotation.Introspected;
+import io.micronaut.serde.annotation.Serdeable;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Value
+@Introspected
+@Serdeable
+@Data
 public class WalletResponse {
     UUID id;
     UUID userId;

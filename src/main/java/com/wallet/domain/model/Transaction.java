@@ -20,16 +20,23 @@ public class Transaction {
     private BigDecimal currentBalance;
     private UUID relatedTransactionId;
 
-    public Transaction(UUID walletId, TransactionType transactionType, BigDecimal amount, String description, BigDecimal previousBalance, BigDecimal currentBalance, UUID relatedTransactionId) {
+    public Transaction(UUID id, UUID walletId, TransactionType transactionType, BigDecimal amount, OffsetDateTime transactionDate, String description, BigDecimal previousBalance, BigDecimal currentBalance, UUID relatedTransactionId) {
+        this.id = id;
         this.walletId = walletId;
         this.transactionType = transactionType;
         this.amount = amount;
-        this.transactionDate = OffsetDateTime.now();
+        this.transactionDate = transactionDate;
         this.description = description;
         this.previousBalance = previousBalance;
         this.currentBalance = currentBalance;
         this.relatedTransactionId = relatedTransactionId;
     }
+
+    public Transaction(UUID walletId, TransactionType transactionType, BigDecimal amount, String description, BigDecimal previousBalance, BigDecimal currentBalance, UUID relatedTransactionId) {
+        this(null, walletId, transactionType, amount, null, description, previousBalance, currentBalance, relatedTransactionId);
+        this.transactionDate = OffsetDateTime.now();
+    }
+
 
     public Transaction(UUID walletId, TransactionType transactionType, BigDecimal amount, String description, BigDecimal previousBalance, BigDecimal currentBalance) {
         this(walletId, transactionType, amount, description, previousBalance, currentBalance, null);

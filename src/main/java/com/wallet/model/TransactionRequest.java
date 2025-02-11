@@ -1,10 +1,13 @@
 package com.wallet.model;
 
+import io.micronaut.serde.annotation.Serdeable;
 import lombok.Data;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+
+@Serdeable
 @Data
 public class TransactionRequest {
     @NotNull

@@ -1,9 +1,13 @@
 package com.wallet.model;
 
-import lombok.Value;
+import io.micronaut.serde.annotation.Serdeable;
+import lombok.Data;
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Value
+@Data
+@Serdeable
 public class WalletCreateRequest {
-    UUID userId;
+    @NotNull
+    private UUID userId;
 }

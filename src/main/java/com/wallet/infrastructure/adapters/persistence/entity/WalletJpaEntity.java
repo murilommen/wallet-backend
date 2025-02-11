@@ -12,7 +12,7 @@ import java.util.UUID;
 @Table(name = "wallets")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor // Optional, if you need constructors with all args for JPA entity
+@AllArgsConstructor
 public class WalletJpaEntity {
 
     @Id

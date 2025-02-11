@@ -1,4 +1,12 @@
 micronaut:
+  router:
+    static-resources:
+      swagger-ui:
+        mapping: /swagger-ui/**
+        paths: classpath:META-INF/swagger/views/swagger-ui
+      swagger:
+        mapping: /swagger/**
+        paths: classpath:META-INF/swagger
   server:
     port: 8081
   application:
@@ -7,6 +15,7 @@ micronaut:
     enabled: true
     swagger-ui:
       enabled: true
+      path: /swagger-ui
 
 datasources:
   default:
@@ -23,3 +32,8 @@ liquibase:
     default:
       enabled: true
       change-log: classpath:db/changelog/db.changelog-master.yaml
+
+logger:
+  levels:
+    io.micronaut: TRACE
+    io.micronaut.web.router: DEBUG
