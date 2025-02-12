@@ -8,6 +8,7 @@ import com.wallet.infrastructure.web.dto.TransactionRequest;
 import com.wallet.infrastructure.web.dto.TransferRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
+import io.micronaut.retry.annotation.Retryable;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,7 @@ public class WalletController {
     @Inject
     WalletService walletService;
 
+    @Retryable
     @Post
     public HttpResponse<WalletResponse> createWallet(@Body @Valid @NotNull WalletCreateRequest walletCreateRequest) {
         return HttpResponse.created(walletService.createWallet(walletCreateRequest));
@@ -35,16 +37,19 @@ public class WalletController {
         return HttpResponse.ok(walletService.getHistoricalWalletBalance(walletId, timestamp));
     }
 
+    @Retryable
     @Post("/{walletId}/deposit")
     public HttpResponse<WalletBalanceResponse> depositFunds(@PathVariable UUID walletId, @Body @Valid @NotNull TransactionRequest transactionRequest) {
         return HttpResponse.ok(walletService.depositFunds(walletId, transactionRequest));
     }
 
+    @Retryable
     @Post("/{walletId}/withdraw")
     public HttpResponse<WalletBalanceResponse> withdrawFunds(@PathVariable UUID walletId, @Body @Valid @NotNull TransactionRequest transactionRequest) {
         return HttpResponse.ok(walletService.withdrawFunds(walletId, transactionRequest));
     }
 
+    @Retryable
     @Post("/transfer")
     public HttpResponse<WalletBalanceResponse> transferFunds(@Body @Valid @NotNull TransferRequest transferRequest) {
         return HttpResponse.ok(walletService.transferFunds(transferRequest));

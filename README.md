@@ -22,4 +22,5 @@ And access the swagger documentation for the API operations at http://localhost:
 - [ ] Make the app start with Docker Compose
 ---
 # What I'd do next
+- [ ] Fine tune @Retryable parameters as needed
 - [ ] Enable a CI/CD pipeline to test, build and deploy the app to a desired infrastructure
