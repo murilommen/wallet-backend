@@ -3,6 +3,7 @@ package com.wallet.infrastructure.adapters.persistence;
 
 import com.wallet.domain.model.Wallet;
 import com.wallet.domain.port.outgoing.WalletRepository;
+import com.wallet.exceptions.WalletNotFoundException;
 import com.wallet.infrastructure.adapters.persistence.jpa.JpaWalletRepository;
 import com.wallet.infrastructure.adapters.persistence.jpa.entity.WalletJpaEntity;
 import jakarta.inject.Inject;
@@ -40,7 +41,7 @@ public class JpaWalletRepositoryAdapter implements WalletRepository {
     @Transactional
     public Wallet update(Wallet wallet) {
         if (!jpaWalletRepository.existsById(wallet.getId())) {
-            throw new IllegalArgumentException("Wallet not found: " + wallet.getId());
+            throw new WalletNotFoundException("Wallet not found with ID" + wallet.getId());
         }
         WalletJpaEntity jpaEntity = mapToJpaEntity(wallet);
         WalletJpaEntity updatedJpaEntity = jpaWalletRepository.update(jpaEntity);

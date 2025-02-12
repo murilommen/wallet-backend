@@ -8,4 +8,14 @@ services:
       POSTGRES_PASSWORD: wallet_pass
       POSTGRES_DB: wallet_db
 
-# TODO declare user/password as env vars on a .env file
+  wallet-service:
+    build: .
+    container_name: wallet-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      JDBC_URL: jdbc:postgresql://db:5432/wallet_db
+      JDBC_USERNAME: wallet_user
+      JDBC_PASSWORD: wallet_pass

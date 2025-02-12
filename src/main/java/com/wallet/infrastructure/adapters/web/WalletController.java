@@ -1,13 +1,16 @@
 package com.wallet.infrastructure.adapters.web;
 
 import com.wallet.domain.port.incoming.WalletService;
+import com.wallet.exceptions.WalletNotFoundException;
 import com.wallet.infrastructure.web.dto.WalletBalanceResponse;
 import com.wallet.infrastructure.web.dto.WalletCreateRequest;
 import com.wallet.infrastructure.web.dto.WalletResponse;
 import com.wallet.infrastructure.web.dto.TransactionRequest;
 import com.wallet.infrastructure.web.dto.TransferRequest;
 import io.micronaut.http.HttpResponse;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
+import io.micronaut.http.annotation.Error;
 import io.micronaut.retry.annotation.Retryable;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -53,5 +56,11 @@ public class WalletController {
     @Post("/transfer")
     public HttpResponse<WalletBalanceResponse> transferFunds(@Body @Valid @NotNull TransferRequest transferRequest) {
         return HttpResponse.ok(walletService.transferFunds(transferRequest));
+    }
+
+    @Error(exception = WalletNotFoundException.class)
+    public HttpResponse<WalletBalanceResponse> walletNotFoundHandler(WalletNotFoundException e) {
+        return HttpResponse.<WalletBalanceResponse>status(HttpStatus.NOT_FOUND)
+                .body(new WalletBalanceResponse(null));
     }
 }

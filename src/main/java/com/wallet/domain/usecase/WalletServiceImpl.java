@@ -6,6 +6,8 @@ import com.wallet.domain.model.Wallet;
 import com.wallet.domain.port.incoming.WalletService;
 import com.wallet.domain.port.outgoing.TransactionRepository;
 import com.wallet.domain.port.outgoing.WalletRepository;
+import com.wallet.exceptions.NegativeAmountException;
+import com.wallet.exceptions.WalletNotFoundException;
 import com.wallet.infrastructure.web.dto.WalletBalanceResponse;
 import com.wallet.infrastructure.web.dto.WalletCreateRequest;
 import com.wallet.infrastructure.web.dto.WalletResponse;
@@ -103,7 +105,7 @@ public class WalletServiceImpl implements WalletService {
         Wallet wallet = getWalletByIdOrThrow(walletId);
         BigDecimal depositAmount = transactionRequest.getAmount();
         if (depositAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Deposit amount must be positive."); // Or a custom exception
+            throw new NegativeAmountException("Deposit amount must be positive.");
         }
 
         BigDecimal previousBalance = wallet.getBalance();
@@ -120,7 +122,7 @@ public class WalletServiceImpl implements WalletService {
         Wallet wallet = getWalletByIdOrThrow(walletId);
         BigDecimal withdrawalAmount = transactionRequest.getAmount();
         if (withdrawalAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Withdrawal amount must be positive.");
+            throw new NegativeAmountException("Withdrawal amount must be positive.");
         }
         if (wallet.getBalance().compareTo(withdrawalAmount) < 0) {
             throw new IllegalArgumentException("Insufficient funds.");
@@ -130,7 +132,7 @@ public class WalletServiceImpl implements WalletService {
         wallet.withdraw(withdrawalAmount);
         walletRepository.update(wallet);
 
-        createAndSaveTransaction(wallet, TransactionType.WITHDRAW, withdrawalAmount, "Withdrawal", previousBalance, wallet.getBalance()); // Use wallet.getBalance()
+        createAndSaveTransaction(wallet, TransactionType.WITHDRAW, withdrawalAmount, "Withdrawal", previousBalance, wallet.getBalance());
         return mapWalletBalanceResponse(wallet);
     }
 
@@ -145,10 +147,10 @@ public class WalletServiceImpl implements WalletService {
         BigDecimal transferAmount = transferRequest.getAmount();
 
         if (transferAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Transfer amount must be positive.");
+            throw new NegativeAmountException("Transfer amount must be positive.");
         }
         if (fromWallet.getBalance().compareTo(transferAmount) < 0) {
-            throw new IllegalArgumentException("Insufficient funds for transfer.");
+            throw new NegativeAmountException("Insufficient funds for transfer.");
         }
 
         BigDecimal fromWalletPreviousBalance = fromWallet.getBalance();
@@ -175,7 +177,7 @@ public class WalletServiceImpl implements WalletService {
 
     private Wallet getWalletByIdOrThrow(UUID walletId) {
         return walletRepository.findById(walletId)
-                .orElseThrow(() -> new IllegalArgumentException("Wallet not found: " + walletId)); // Or custom exception
+                .orElseThrow(() -> new WalletNotFoundException("Wallet not found: " + walletId));
     }
 
 
