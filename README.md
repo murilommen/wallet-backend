@@ -1,15 +1,25 @@
 # Wallet Service
 
+This repository is a study use-case for a Wallet management application that is able to:
+- Create Wallet: Allow the creation of wallets for users.
+- Retrieve Balance: Retrieve the current balance of a user's wallet.
+- Retrieve Historical Balance: Retrieve the balance of a user's wallet at a specific point in the past.
+- Deposit Funds: Enable users to deposit money into their wallets.
+- Withdraw Funds: Enable users to withdraw money from their wallets.
+- Transfer Funds: Facilitate the transfer of money between user wallets.
+
 ## Local development
 You will need Docker and Docker Compose locally in order to run this project as intended.
+Start the database and the server locally with Docker Compose:
 
-### Option 1) Start the database and the server locally with Docker Compose
 `docker compose up -d`
 
-And access the swagger documentation for the API operations at http://localhost:8080/swagger-ui
+Which will spin up a PostgreSQL database at port 5432 and a Micronaut server for the Wallets APIs at port 8080.
+
+Once docker compose is running, you can access the swagger documentation for the API operations at http://localhost:8080/swagger-ui
 
 >**NOTE:** If you already have something setup at ports 5432 (Postgres) or 8080 (the server), you can change them
-> on `docker-compose.yaml` and `src/main/resources/application.properties` respectively
+> on `docker-compose.yaml`
 
 ---
 
@@ -17,14 +27,14 @@ And access the swagger documentation for the API operations at http://localhost:
 - Micronaut is built to be non-blocking, using Netty as its underlying server infrastructure, all DB calls and I/O operations happen in separate threads
 - Micronaut is designed for a fast startup with minimal memory consumption, it fast recovers from crashes and enables minimal downtime
 - This microservice implementation makes it easy to scale the app horizontally with added replicas as needed and a load balancer to distribute workloads
-- It handles exceptions gracefully, such as the `IllegalArgumentException` that is thrown on `transferFunds`, or the custom ones on `com.wallet.exceptions`.
+- It handles exceptions gracefully, such as the `IllegalArgumentException` that is thrown on `transferFunds`, or the custom ones at `com.wallet.exceptions`.
 - Manages migrations with liquibase, making sure that as soon as the application starts, Micronaut picks it up and applies any changes to the source code
 - By using HikariCP under the hood, Micronaut also handles the connection to Postgres via a connection Pool, that can be further configured on `application.properties`
 - By implementing the Wallet app using the Hexagonal Architecture, it's easier to extend the usages, swap databases and also build unit tests with Mocks
 - It stores a `TransactionJpaEntity` for every transaction made in the database, making it easier to trace the exact wallet balances at any given time
 
 ## What needs to be considered for production
-Time constraint and also scope of this deliverable has made room for some improvements, that could be addressed in a real-world scenario. 
+Time constraint and also the scope of this deliverable has made room for some improvements, that could be addressed in a real-world scenario. 
 I've considered them not as relevant as what was accomplished in terms of providing a base for a solid and production-ready app.
 They are:
 - Centralize env variables definition for a production use-case

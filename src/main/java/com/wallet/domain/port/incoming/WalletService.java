@@ -1,6 +1,5 @@
 package com.wallet.domain.port.incoming;
 
-import com.wallet.domain.model.Wallet;
 import com.wallet.infrastructure.web.dto.WalletBalanceResponse;
 import com.wallet.infrastructure.web.dto.WalletCreateRequest;
 import com.wallet.infrastructure.web.dto.WalletResponse;

@@ -10,7 +10,6 @@ import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,10 +34,10 @@ public class JpaTransactionRepositoryAdapter implements TransactionRepository {
 
     @Override
     @Transactional
-    public Transaction update(Transaction transaction) {
+    public void update(Transaction transaction) {
         TransactionJpaEntity jpaEntity = mapToJpaEntity(transaction);
         TransactionJpaEntity updatedJpaEntity = jpaTransactionRepository.update(jpaEntity);
-        return mapToDomain(updatedJpaEntity);
+        mapToDomain(updatedJpaEntity);
     }
 
     @Override
