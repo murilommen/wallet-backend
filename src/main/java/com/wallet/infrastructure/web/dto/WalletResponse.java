@@ -1,4 +1,4 @@
-package com.wallet.model;
+package com.wallet.infrastructure.web.dto;
 
 import com.wallet.domain.model.Wallet;
 import io.micronaut.core.annotation.Introspected;

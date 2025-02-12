@@ -1,4 +1,4 @@
-package com.wallet.model;
+package com.wallet.infrastructure.web.dto;
 
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Value;

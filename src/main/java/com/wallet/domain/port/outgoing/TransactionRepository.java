@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public interface TransactionRepository {
     Transaction save(Transaction transaction);
+    Transaction update(Transaction transaction);
     List<Transaction> findByWalletIdAndTransactionDateLessThanOrEqualToOrderByTransactionDateDesc(UUID walletId, OffsetDateTime transactionDate);
 }

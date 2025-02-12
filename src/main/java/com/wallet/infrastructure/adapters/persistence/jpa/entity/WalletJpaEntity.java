@@ -1,4 +1,4 @@
-package com.wallet.infrastructure.adapters.persistence.entity;
+package com.wallet.infrastructure.adapters.persistence.jpa.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -6,11 +6,11 @@ import com.wallet.domain.model.Wallet;
 import com.wallet.domain.port.incoming.WalletService;
 import com.wallet.domain.port.outgoing.TransactionRepository;
 import com.wallet.domain.port.outgoing.WalletRepository;
-import com.wallet.model.WalletBalanceResponse;
-import com.wallet.model.WalletCreateRequest;
-import com.wallet.model.WalletResponse;
-import com.wallet.model.TransactionRequest;
-import com.wallet.model.TransferRequest;
+import com.wallet.infrastructure.web.dto.WalletBalanceResponse;
+import com.wallet.infrastructure.web.dto.WalletCreateRequest;
+import com.wallet.infrastructure.web.dto.WalletResponse;
+import com.wallet.infrastructure.web.dto.TransactionRequest;
+import com.wallet.infrastructure.web.dto.TransferRequest;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
@@ -66,18 +66,34 @@ public class WalletServiceImpl implements WalletService {
     }
 
     private BigDecimal calculateHistoricalBalance(Wallet wallet, OffsetDateTime timestamp) {
+        log.debug("Calculating historical balance for wallet ID: {}, timestamp: {}", wallet.getId(), timestamp);
+
         List<Transaction> historicalTransactions = transactionRepository
                 .findByWalletIdAndTransactionDateLessThanOrEqualToOrderByTransactionDateDesc(wallet.getId(), timestamp);
 
-        BigDecimal historicalBalance = BigDecimal.ZERO;
-        for (Transaction transaction : historicalTransactions) {
-            if (transaction.getTransactionType() == TransactionType.CREATE_WALLET) {
-                continue; // Skip creation transaction, balance starts at 0 before it.
-            }
-            historicalBalance = transaction.getPreviousBalance(); // Balance before the transaction is the balance at that point.
-            break; // Transactions are ordered desc by date, so first one is closest to timestamp.
+        log.debug("Number of historical transactions found: {}", historicalTransactions.size());
+
+        if (historicalTransactions.isEmpty()) {
+            log.debug("No historical transactions found for this wallet and timestamp.");
+            return BigDecimal.ZERO;
         }
-        return historicalBalance;
+
+        log.debug("Historical transactions found:");
+        for (Transaction tx : historicalTransactions) {
+            log.debug("  Transaction ID: {}, Type: {}, Date: {}, Current Balance: {}, Previous Balance: {}", tx.getId(), tx.getTransactionType(), tx.getTransactionDate(), tx.getCurrentBalance(), tx.getPreviousBalance());
+        }
+        historicalTransactions.sort((t1, t2) -> t2.getTransactionDate().compareTo(t1.getTransactionDate()));
+
+        for (Transaction transaction : historicalTransactions) {
+            if (!transaction.getTransactionDate().isAfter(timestamp)) {
+                BigDecimal historicalBalance = transaction.getCurrentBalance();
+                log.debug("Found matching transaction at {} with balance: {}", transaction.getTransactionDate(), historicalBalance);
+                return historicalBalance;
+            }
+        }
+
+        log.debug("No transactions found before or at the specified timestamp.");
+        return BigDecimal.ZERO;
     }
 
 
@@ -136,45 +152,36 @@ public class WalletServiceImpl implements WalletService {
         }
 
         BigDecimal fromWalletPreviousBalance = fromWallet.getBalance();
-        fromWallet.withdraw(transferAmount); // Domain logic
-        walletRepository.update(fromWallet); // OUTGOING port
+        fromWallet.withdraw(transferAmount);
+        walletRepository.update(fromWallet);
 
         BigDecimal toWalletPreviousBalance = toWallet.getBalance();
-        toWallet.deposit(transferAmount); // Domain logic
-        walletRepository.update(toWallet); // OUTGOING port
+        toWallet.deposit(transferAmount);
+        walletRepository.update(toWallet);
 
-        // Create TRANSFER_OUT transaction for sender
         Transaction transferOutTransaction = createAndSaveTransaction(fromWallet, TransactionType.TRANSFER_OUT, transferAmount, "Transfer to wallet " + toWallet.getId(), fromWalletPreviousBalance, fromWallet.getBalance()); // Use wallet.getBalance()
 
-        // Create TRANSFER_IN transaction for receiver
         Transaction transferInTransaction = createAndSaveTransaction(toWallet, TransactionType.TRANSFER_IN, transferAmount, "Transfer from wallet " + fromWallet.getId(), toWalletPreviousBalance, toWallet.getBalance()); // Use wallet.getBalance()
 
-
-        // Link related transactions (important for audit and tracing)
         transferOutTransaction.setRelatedTransactionId(transferInTransaction.getId());
-        transactionRepository.save(transferOutTransaction); // OUTGOING port
+        transactionRepository.update(transferOutTransaction);
         transferInTransaction.setRelatedTransactionId(transferOutTransaction.getId());
-        transactionRepository.save(transferInTransaction); // OUTGOING port
+        transactionRepository.update(transferInTransaction);
 
 
-        return mapWalletBalanceResponse(fromWallet); // Or maybe return balance of both? For now, sender's balance.
-    }
-
-    @Override
-    public Wallet getWalletById(UUID walletId) {
-        return getWalletByIdOrThrow(walletId);
+        return mapWalletBalanceResponse(fromWallet);
     }
 
 
     private Wallet getWalletByIdOrThrow(UUID walletId) {
-        return walletRepository.findById(walletId) // Using OUTGOING port
+        return walletRepository.findById(walletId)
                 .orElseThrow(() -> new IllegalArgumentException("Wallet not found: " + walletId)); // Or custom exception
     }
 
 
     private Transaction createAndSaveTransaction(Wallet wallet, TransactionType transactionType, BigDecimal amount, String description, BigDecimal previousBalance, BigDecimal currentBalance) {
         Transaction transaction = new Transaction(wallet.getId(), transactionType, amount, description, previousBalance, currentBalance);
-        return transactionRepository.save(transaction); // Using OUTGOING port
+        return transactionRepository.save(transaction);
     }
 
 

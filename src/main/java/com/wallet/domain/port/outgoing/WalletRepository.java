@@ -8,5 +8,4 @@ public interface WalletRepository {
     Optional<Wallet> findById(UUID id);
     Wallet save(Wallet wallet);
     Wallet update(Wallet wallet);
-    Optional<Wallet> findByUserId(UUID userId);
 }

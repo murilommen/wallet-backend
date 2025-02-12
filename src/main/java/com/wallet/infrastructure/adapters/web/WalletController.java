@@ -1,11 +1,11 @@
 package com.wallet.infrastructure.adapters.web;
 
 import com.wallet.domain.port.incoming.WalletService;
-import com.wallet.model.WalletBalanceResponse;
-import com.wallet.model.WalletCreateRequest;
-import com.wallet.model.WalletResponse;
-import com.wallet.model.TransactionRequest;
-import com.wallet.model.TransferRequest;
+import com.wallet.infrastructure.web.dto.WalletBalanceResponse;
+import com.wallet.infrastructure.web.dto.WalletCreateRequest;
+import com.wallet.infrastructure.web.dto.WalletResponse;
+import com.wallet.infrastructure.web.dto.TransactionRequest;
+import com.wallet.infrastructure.web.dto.TransferRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
