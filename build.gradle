@@ -31,6 +31,7 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("io.micronaut:micronaut-http-client")
+    testImplementation("org.mockito:mockito-core:2.1.0")
     implementation("io.micronaut.liquibase:micronaut-liquibase")
     implementation("org.liquibase:liquibase-core:4.24.0")
 }
