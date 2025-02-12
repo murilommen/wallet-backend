@@ -107,10 +107,10 @@ public class WalletServiceImpl implements WalletService {
         }
 
         BigDecimal previousBalance = wallet.getBalance();
-        wallet.deposit(depositAmount); // Use domain logic on Wallet entity
-        walletRepository.update(wallet); // Using OUTGOING port
+        wallet.deposit(depositAmount);
+        walletRepository.update(wallet);
 
-        Transaction depositTransaction = createAndSaveTransaction(wallet, TransactionType.DEPOSIT, depositAmount, "Deposit", previousBalance, wallet.getBalance()); // Use wallet.getBalance()
+        createAndSaveTransaction(wallet, TransactionType.DEPOSIT, depositAmount, "Deposit", previousBalance, wallet.getBalance());
         return mapWalletBalanceResponse(wallet);
     }
 
@@ -127,10 +127,10 @@ public class WalletServiceImpl implements WalletService {
         }
 
         BigDecimal previousBalance = wallet.getBalance();
-        wallet.withdraw(withdrawalAmount); // Use domain logic on Wallet entity
-        walletRepository.update(wallet); // Using OUTGOING port
+        wallet.withdraw(withdrawalAmount);
+        walletRepository.update(wallet);
 
-        Transaction withdrawTransaction = createAndSaveTransaction(wallet, TransactionType.WITHDRAW, withdrawalAmount, "Withdrawal", previousBalance, wallet.getBalance()); // Use wallet.getBalance()
+        createAndSaveTransaction(wallet, TransactionType.WITHDRAW, withdrawalAmount, "Withdrawal", previousBalance, wallet.getBalance()); // Use wallet.getBalance()
         return mapWalletBalanceResponse(wallet);
     }
 
