@@ -1,15 +1,10 @@
 # Wallet Service
 
 ## Local development
-You will need Java >= 21 and Docker Compose locally in order to run this project as intended.
+You will need Docker and Docker Compose locally in order to run this project as intended.
 
-### Start the database locally with Docker Compose
+### Option 1) Start the database and the server locally with Docker Compose
 `docker compose up -d`
-
-In case you already have a local PostgreSQL instance running on 5432, then this step becomes optional
-
-### Build the app and start the server
-`./gradlew run`
 
 And access the swagger documentation for the API operations at http://localhost:8080/swagger-ui
 
